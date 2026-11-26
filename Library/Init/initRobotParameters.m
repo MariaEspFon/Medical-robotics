@@ -11,7 +11,7 @@ thickness = 12; % thickness of mount in mm
 posLaserGate = [500-10-45 -400 25+10+thickness]*1e-3; % meters
 rotLaserGate = rotz(ori);
 
-T_b_LaserGate = ones(4);
+T_b_LaserGate = eye(4);
 T_b_LaserGate(1:3,1:3) = rotLaserGate;
 T_b_LaserGate(1:3,4) = posLaserGate;
 
@@ -23,9 +23,9 @@ T_b_LaserGate(1:3,4) = posLaserGate;
 T_F1_Center = eye(4); % Initial Position (F1 origin)
 
 % Square dimensions
-square_size = 20e-3;  % 20mm
+square_size = 16e-3;  % 20mm
 h = square_size/2;
-% Offset between calibration planes
+% Offset between calibration planes (in Z AXIS)
 offset = 10e-3;       % 10mm
 % Square vertices (in F1 coordinates)
 vertices = [
@@ -67,13 +67,9 @@ triggerX = 0;
 triggerY = 0;
 
 % Calibration measurements
-% each matrix stores four ON/OFF positions (3D vectors)
-plane1_ON  = zeros(3,4);
-plane1_OFF = zeros(3,4);
-plane2_ON  = zeros(3,4);
-plane2_OFF = zeros(3,4);
-plane3_ON  = zeros(3,4);
-plane3_OFF = zeros(3,4);
+% Dimensions are: XYZ position, ON-OFF, square side, plane number
+plane_X  = zeros(3,2,2,3);
+plane_Y = zeros(3,2,2,3);
 T_final = eye(4);
 
 calibrationData.thetaX = 0;

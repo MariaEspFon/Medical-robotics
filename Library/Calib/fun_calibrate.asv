@@ -1,0 +1,31 @@
+function [deltasX, deltasY, Rd, calibOK] = fun_calibrate(Y, X, codeState, offset)
+    
+    Rd = zeros(3);
+    deltasX = zeros(2,1);
+    deltasY = zeros (2,1);
+
+    switch codeState
+        case 3
+            % Calculate deltas from plane 2
+            deltasX(1) = ((X(1,1,1,1) + X(1,2,1,1))/2 + (X(1,1,2,1) + X(1,2,2,1))/2)/2;
+            deltasY(1) = ((Y(1,1,1,1) + Y(1,2,1,1))/2 + (Y(1,1,2,1) + Y(1,2,2,1))/2)/2;
+            deltasX(2) = ((X(1,1,1,2) + X(1,2,1,2))/2 + (X(1,1,2,2) + X(1,2,2,2))/2)/2;
+            deltasY(2) = ((Y(1,1,1,2) + Y(1,2,1,2))/2 + (Y(1,1,2,2) + Y(1,2,2,2))/2)/2;
+            % Calculate projection angles
+            thetaY = atand((deltasX(2) - deltasX(1)) / offset);
+            thetaX = atand((deltasY(2) - deltasY(1)) / offset);
+            % Calculate EE rotation matrix
+            Rd = rotx(thetaX) * roty(thetaY);
+  
+            calibOK = 1;
+
+        case 5
+            calibParams = {};
+            calibOK = 1;
+        
+        otherwise 
+            calibParams = {};
+            calibOK = 0;
+    end
+   
+end
